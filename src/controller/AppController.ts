@@ -14,17 +14,21 @@ export const adminLogin = async (req: Request, res: Response) => {
     const adminResult = await adminRepo.find({
         where: { phone: phone, password: password },
     });
-    const supervisorResult = await supervisorRepo.find({ where: { admin: { id: adminResult[0].id } } })
-    const branchResult = await branchRepo.find({ where: { admin: {id : adminResult[0].id } } })
 
     if(adminResult.length > 0){
+        const supervisorResult = await supervisorRepo.find({ where: { admin: { id: adminResult[0].id } } })
+        const branchResult = await branchRepo.find({ where: { admin: {id : adminResult[0].id } } })
+
         const result = adminResult.map((item) => {
             const newItem = { ...item };
-            newItem.supervisiors = supervisorResult
-            newItem.branches = branchResult
+            newItem.supervisiors = supervisorResult.length > 0 ? supervisorResult : []
+            newItem.branches = branchResult.length > 0 ? branchResult : []
             return newItem
         })
+
         res.status(200).json({ result })
+    } else {
+        res.status(400).json({ message: "Phone no or password Invalid, Please try again" })
     }
     
 };
