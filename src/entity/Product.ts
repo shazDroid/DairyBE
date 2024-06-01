@@ -1,7 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { ProductItem } from "./ProductItem";
-import { ServeType } from "../utility/Enums";
-import { Package } from "./Package";
+import { ServeType, Unit } from "../utility/Enums";
 import { Admin } from "./Admin";
 
 
@@ -17,14 +15,8 @@ export class Product {
     @Column()
     price: number
 
-    @Column({ type: 'enum', enum: ServeType })
-    type: ServeType
-
-    @Column({ default: false })
-    isSpecial: boolean
-
-    @Column({ default: false })
-    isWeekendOnly: boolean
+    @Column({ type: 'enum', enum: Unit })
+    unit: Unit
 
     @OneToOne(() => Admin, admin => admin.products)
     @JoinColumn({
@@ -32,16 +24,6 @@ export class Product {
         referencedColumnName: 'id'
     })
     admin: Admin
-
-    @OneToMany(() => ProductItem, productItem => productItem.product)
-    productItem: ProductItem[]
-
-    @OneToMany(() => Package, productPackage => productPackage.products)
-    @JoinColumn({
-        name: 'package_id',
-        referencedColumnName:'id'
-    })
-    package: Package[]
 
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date

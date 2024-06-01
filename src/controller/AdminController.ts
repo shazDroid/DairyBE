@@ -2,16 +2,19 @@ import express, { NextFunction, Request, Response } from 'express';
 import { appDataSource } from '../dataSource';
 import { Admin } from '../entity/Admin';
 import { Branch } from '../entity/Branch';
-import { Supervisor } from '../entity/Supervisor';
+import { Worker } from '../entity/Worker';
+import { Product } from '../entity/Product';
+
 
 const adminRepo = appDataSource.getRepository(Admin);
-const superVisiorRepo = appDataSource.getRepository(Supervisor);
+const workerRepo = appDataSource.getRepository(Worker);
 const branchRepo = appDataSource.getRepository(Branch);
+const productRepo = appDataSource.getRepository(Product);
 
 /**
  * Pre Checks 
  */
-export const preChecks = async (
+export const adminPreChecks = async (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -130,62 +133,49 @@ export const getBranchById = async (req: Request, res: Response) => {
  * Add branch to admin 
  */
 export const addBranchToAdmin = async (req: Request, res: Response) => {
-    const { adminId } = req.params;
     const branch: Branch = req.body
     
-    const admin = await adminRepo.findOneBy({ id: parseInt(adminId) });
+    const admin = await adminRepo.findOneBy({ id:branch.admin.id });
 
-    // insert new branch 
-    const branchInsertResult = await branchRepo.insert(branch)
-
-    // bind branch with admin 
-    if(branchInsertResult != null){
+    // insert new branch
+    if(admin != null){
+        branch.admin = admin
+        const branchInsertResult = await branchRepo.insert(branch)
         const branchResult = await branchRepo.findOneBy({ id: parseInt(branchInsertResult.raw.insertId) });
-
-        if (admin != null && branchResult != null) {
-            admin.branches = [branch];
-            const result = await adminRepo.save(admin);
-    
-            if (result != null) {
-                res.status(200).json({ message: 'Branch added successfully' });
-            } else {
-                res.status(200).json({ message: 'Failed to add branch' });
-            }
+        if (branchResult != null) {
+            res.status(200).json({ message: 'Branch added successfully' });
         } else {
-            res.status(400).json({
-                messsage: 'Admin not found or branch not found !',
-            });
+            res.status(200).json({ message: 'Failed to add branch' });
         }
-    }
+    } 
 };
 
 
 
 /**
- *  Supervisior
- *  Get all supervisor
+ *  Worker
+ *  Get all worker
  */
 
-export const getAllSupervisor = async (req: Request, res: Response) => {
+export const getAllWorker = async (req: Request, res: Response) => {
     const { adminId } = req.params;
-
     try {
-        const result = await superVisiorRepo.find({
+        const result = await workerRepo.find({
             where: { admin: { id: parseInt(adminId) } },
             relations: ['branch']
         });
 
         if (result.length > 0) {
-            res.status(200).json({ supervisors: result });
+            res.status(200).json({ worker: result });
         } else {
             res.status(200).json({
-                message: 'No supervisors present',
-                supervisors: [],
+                message: 'No worker present',
+                worker: [],
             });
         }
     } catch (error) {
         res.status(500).json({
-            message: 'Failed to fetch supervisors',
+            message: 'Failed to fetch worker',
             error: error,
         });
     }
@@ -193,39 +183,77 @@ export const getAllSupervisor = async (req: Request, res: Response) => {
 
 
 /**
- * Add new supervisor
+ * Add new worker
  */
-export const addNewSupervisor = async (req: Request, res: Response) => {
-    const supervisor: Supervisor = req.body;
-    const admin = await adminRepo.findOneBy({ id: supervisor.admin.id });
+export const addNewWorker = async (req: Request, res: Response) => {
+    const worker: Worker = req.body;
+    const admin = await adminRepo.findOneBy({ id: worker.admin.id });
 
     if (admin != null) {
-        supervisor.admin = admin;
+        worker.admin = admin;
     } else {
         return res.status(404).json({ message: 'Admin not found !' });
     }
 
-    const result = await superVisiorRepo.insert(supervisor);
-    const responseBody = await superVisiorRepo.findOneBy(result.raw.insertId);
+    const result = await workerRepo.insert(worker);
+    const responseBody = await workerRepo.findOneBy(result.raw.insertId);
     res.status(200).json({
-        message: 'Supervisior added successfully',
-        supervisior: responseBody,
+        message: 'Worker added successfully',
+        worker: responseBody,
     });
 };
 
 
 /**
- * Get supervisor by branch
+ * Get worker by branch
  */
-export const getSupervisorByBranch = async (req: Request, res: Response) => {
+export const getWorkerByBranch = async (req: Request, res: Response) => {
     const { branchId } = req.params;
-    const result = superVisiorRepo.findOneBy({
+    const result = workerRepo.findOneBy({
         branch: { id: parseInt(branchId) },
     });
 
     if (!result) {
-        res.status(200).json({ supervisor: result });
+        res.status(200).json({ worker: result });
     } else {
-        res.status(200).json({ message: 'No supervisor present' });
+        res.status(200).json({ message: 'No worker present' });
     }
 };
+
+
+/**
+ * Get all products 
+ */
+export const getAllProducts = async (req: Request, res: Response) => {
+    const { adminId } = req.params
+    const result = productRepo.findOneBy({
+        admin: { id: parseInt(adminId) }
+    })
+
+    if(!result){
+        res.status(200).json({ products: result })
+    } else {
+        res.status(200).json({ message: 'No products found' })
+    }
+}
+
+/**
+ * Add product
+ */
+export const addProduct = async (req: Request, res: Response) => {
+    const product: Product = req.body;
+    const admin = await adminRepo.findOneBy({ id: product.admin.id });
+
+    if (admin != null) {
+        product.admin = admin;
+    } else {
+        return res.status(404).json({ message: 'Admin not found !' });
+    }
+
+    const result = await productRepo.insert(product);
+    const responseBody = await productRepo.findOneBy(result.raw.insertId);
+    res.status(200).json({
+        message: 'Product added successfully',
+        product: responseBody,
+    });
+}

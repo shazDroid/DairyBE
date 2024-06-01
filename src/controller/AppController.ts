@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import { appDataSource } from '../dataSource';
 import { Admin } from '../entity/Admin';
-import { Supervisor } from '../entity/Supervisor';
+import { Worker } from '../entity/Worker';
 import { AdminModel } from '../model/Admin';
 import { Branch } from '../entity/Branch';
 
 const adminRepo = appDataSource.getRepository(Admin);
-const supervisorRepo = appDataSource.getRepository(Supervisor);
+const supervisorRepo = appDataSource.getRepository(Worker);
 const branchRepo = appDataSource.getRepository(Branch);
 
 export const adminLogin = async (req: Request, res: Response) => {
@@ -21,14 +21,14 @@ export const adminLogin = async (req: Request, res: Response) => {
 
         const result = adminResult.map((item) => {
             const newItem = { ...item };
-            newItem.supervisiors = supervisorResult.length > 0 ? supervisorResult : []
+            newItem.worker = supervisorResult.length > 0 ? supervisorResult : []
             newItem.branches = branchResult.length > 0 ? branchResult : []
             return newItem
         })
 
         res.status(200).json({ result })
     } else {
-        res.status(400).json({ message: "Phone no or password Invalid, Please try again" })
+        res.status(404).json({ message: "Phone no or password Invalid, Please try again" })
     }
     
 };

@@ -1,4 +1,4 @@
-import { Supervisor } from "../entity/Supervisor";
+import { Worker } from "../entity/Worker";
 
 export class AdminModel {
     id?: number;
@@ -7,7 +7,7 @@ export class AdminModel {
     phone?: string;
     password?: string;
     email?: string;
-    supervisiors: Supervisor[]
+    workers: Worker[]
     subscriptionType?: string | null;
     subscriptionStart?: Date | null;
     subscriptionEnd?: Date | null;

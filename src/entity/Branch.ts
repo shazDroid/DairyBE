@@ -1,9 +1,8 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { State } from "./State";
 import { Admin } from "./Admin";
-import { Supervisor } from "./Supervisor";
+import { Worker } from "./Worker";
 import { Customer } from "./Customer";
-import { Package } from "./Package";
 
 @Entity()
 export class Branch {
@@ -16,21 +15,21 @@ export class Branch {
     @Column()
     branch_location: string
 
-    @ManyToMany(() => Admin, admin => admin.branches)
+    @ManyToOne(() => Admin, admin => admin.branches)
+    @JoinColumn({
+        name : "admin_id"
+    })
     admin: Admin
 
     @ManyToOne(() => State, state => state.branch)
     @JoinColumn({ name : 'state_id' })
     state: State
 
-    @OneToMany(() => Supervisor,supervisor => supervisor.branch)
-    supervisiors: Supervisor[]
+    @OneToMany(() => Worker,worker => worker.branch)
+    workers: Worker[]
 
     @OneToMany(() => Customer, customer => customer.branch)
     customer: Customer[]
-
-    @OneToMany(() => Package, adminPackage => adminPackage.branch)
-    packages: Package[]
 
     @CreateDateColumn({ type: 'timestamp'})
     createdAt: Date

@@ -3,7 +3,7 @@ import { json } from 'body-parser';
 import { appDataSource } from './dataSource';
 import { adminRoute } from './route/AdminRoute';
 import { handleException } from './utility/ErrorHandler';
-import { supervisiorRoute } from './route/Supervisior';
+import { workerRoute } from './route/Worker';
 import { appRoute } from './route/AppRoute';
 require('dotenv').config();
 
@@ -18,7 +18,7 @@ app.use(handleException)
 
 // admin route 
 app.use("/api", adminRoute)
-app.use("/api", supervisiorRoute)
+app.use("/api", workerRoute)
 app.use("/api/m", appRoute)
 
 // init database 

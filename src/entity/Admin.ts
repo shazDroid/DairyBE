@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn, JoinTable, ManyToMany } from 'typeorm';
 import { Branch } from './Branch';
-import { Supervisor } from './Supervisor';
-import { Package } from './Package';
+import { Worker } from './Worker';
 import { Product } from './Product';
 
 @Entity()
@@ -24,25 +23,12 @@ export class Admin {
   @Column()
   email: string;
 
-  @ManyToMany(() => Branch, branch => branch.admin)
-  @JoinTable({
-    name: 'admins_branches',
-    joinColumn : {
-      name: 'admin',
-      referencedColumnName: 'id'
-    },
-    inverseJoinColumn : {
-      name: 'branch',
-      referencedColumnName: 'id'
-    }
-  })
+  @OneToMany(() => Branch, branch => branch.admin)
+  @JoinTable()
   branches: Branch[]
 
-  @OneToMany(() => Supervisor, supervisor => supervisor.admin)
-  supervisiors: Supervisor[]
-
-  @OneToMany(() => Package, adminPackage => adminPackage.admin)
-  package: Package[]
+  @OneToMany(() => Worker, worker => worker.admin)
+  worker: Worker[]
 
   @OneToMany(() => Product, product => product.admin)
   products: Product[]

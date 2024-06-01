@@ -3,11 +3,10 @@ import { Admin } from "./entity/Admin";
 import { Branch } from "./entity/Branch";
 import { City } from "./entity/City";
 import { State } from "./entity/State";
-import { Supervisor } from "./entity/Supervisor";
+import { Worker } from "./entity/Worker";
 import { Customer } from "./entity/Customer";
-import { Package } from "./entity/Package";
 import { Product } from "./entity/Product";
-import { ProductItem } from "./entity/ProductItem";
+
 
 export const appDataSource = new DataSource({
     type: "mysql",
@@ -15,10 +14,10 @@ export const appDataSource = new DataSource({
     port: 3306,
     username: "root",
     password: "",
-    database: "mess_db",
+    database: "dairy_db",
     synchronize: true,
     logging: false,
-    entities: [Admin, Branch, City, State, Supervisor, Customer, Package, Product, ProductItem],
+    entities: [Admin, Branch, City, State, Worker, Customer, Product],
     subscribers: [],
     migrations: [],
 })

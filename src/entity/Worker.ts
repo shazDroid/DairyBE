@@ -3,12 +3,12 @@ import { Branch } from "./Branch";
 import { Admin } from "./Admin";
 
 @Entity()
-export class Supervisor {
+export class Worker {
     @PrimaryGeneratedColumn()
     id: number
 
     @Column()
-    supervisor_name: string
+    worker_name: string
 
     @Column()
     phone: number
@@ -19,11 +19,11 @@ export class Supervisor {
     @Column()
     email: string
 
-    @ManyToOne(() => Branch, branch => branch.supervisiors)
+    @ManyToOne(() => Branch, branch => branch.workers)
     @JoinColumn({ name : 'branch_id' })
     branch: Branch
 
-    @ManyToOne(() => Admin, admin => admin.supervisiors)
+    @ManyToOne(() => Admin, admin => admin.worker)
     @JoinColumn({
         name : "admin_id"
     })
