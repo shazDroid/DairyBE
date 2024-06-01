@@ -1,15 +1,17 @@
-import express, { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { appDataSource } from '../dataSource';
 import { Admin } from '../entity/Admin';
 import { Branch } from '../entity/Branch';
 import { Worker } from '../entity/Worker';
 import { Product } from '../entity/Product';
+import { Customer } from '../entity/Customer';
 
 
 const adminRepo = appDataSource.getRepository(Admin);
 const workerRepo = appDataSource.getRepository(Worker);
 const branchRepo = appDataSource.getRepository(Branch);
 const productRepo = appDataSource.getRepository(Product);
+const customerRepo = appDataSource.getRepository(Customer);
 
 /**
  * Pre Checks 
@@ -264,4 +266,51 @@ export const addProduct = async (req: Request, res: Response) => {
         message: 'Product added successfully',
         product: responseBody,
     });
+}
+
+
+/**
+ * Add customer 
+ */
+export const addCustomer = async (req: Request, res: Response) => {
+    const customer: Customer = req.body;
+    const admin = await adminRepo.findOneBy({ id: customer.admin.id });
+
+    if (admin != null) {
+        customer.admin = admin;
+    } else {
+        return res.status(404).json({ message: 'Admin not found !' });
+    }
+
+    const result = await customerRepo.insert(customer);
+    const responseBody = await customerRepo.findOneBy(result.raw.insertId);
+    res.status(200).json({
+        message: 'Customer added successfully',
+        customer: responseBody,
+    });
+}
+
+
+/**
+ * Get all customers
+ */
+export const getAllCustomers = async (req: Request, res: Response) => {
+    const { adminId } = req.params
+    try{
+        const result = await customerRepo.find({
+            where: { admin: { id: parseInt(adminId) } },
+            relations: ["admin"]
+        })
+        console.log(result)
+        if(result.length > 0){
+            res.status(200).json({ customers: result.map(({ admin, ...customerWithoutAdmin }) => customerWithoutAdmin) } )
+        } else {
+            res.status(200).json({ message: 'No customer\'s found' })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to fetch customer\'s',
+            error: error,
+        });
+    }
 }

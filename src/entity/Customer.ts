@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Branch } from "./Branch";
+import { Admin } from "./Admin";
 
 export enum Gender {
     MALE = 'male',
@@ -40,6 +41,13 @@ export class Customer {
 
     @Column()
     package: string
+
+    @ManyToOne(() => Admin, admin => admin.customers)
+    @JoinColumn({
+        name: 'admin_id',
+        referencedColumnName: 'id'
+    })
+    admin: Admin
 
     @ManyToOne(() => Branch,branch => branch.customer)
     @JoinColumn({

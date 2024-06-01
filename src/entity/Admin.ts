@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Branch } from './Branch';
 import { Worker } from './Worker';
 import { Product } from './Product';
+import { Customer } from './Customer';
 
 @Entity()
 export class Admin {
@@ -22,6 +23,10 @@ export class Admin {
 
   @Column()
   email: string;
+
+  @OneToMany(() => Customer, customer => customer.admin)
+  @JoinTable()
+  customers: Customer[]
 
   @OneToMany(() => Branch, branch => branch.admin)
   @JoinTable()

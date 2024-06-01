@@ -1,0 +1,283 @@
+{
+	"info": {
+		"_postman_id": "225e0813-1f33-441a-b43c-839dd98fbfb9",
+		"name": "Dairy APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3768052"
+	},
+	"item": [
+		{
+			"name": "Admin Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"phoneNo\":\"1234\",\r\n    \"password\":\"1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/m/admin-login",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"m",
+						"admin-login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"Sajid Ansari\",\r\n    \"phone\":7620144758,\r\n    \"password\":\"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/admin",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Branch",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 2,\r\n  \"branch_name\": \"My Dairy Shop 2\",\r\n  \"branch_location\": \"Pune\",\r\n  \"admin\": {\r\n    \"id\": 2\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/admin/branch",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"admin",
+						"branch"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Workers",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"supervisor_name\": \"John Doe\",\r\n  \"phone\": 1234567890,\r\n  \"password\": \"somepassword\",\r\n  \"email\": \"john@example.com\",\r\n  \"branch\": {\r\n    \"id\": 1\r\n  },\r\n  \"admin\": {\r\n      \"id\": 1\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/admin/worker/2",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"admin",
+						"worker",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Worker",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"phone\": \"123\",\r\n  \"password\": \"123\",\r\n  \"email\": \"worker@example.com\",\r\n  \"createdAt\": \"2024-06-01T10:00:00Z\",\r\n  \"updatedAt\": \"2024-06-01T10:00:00Z\",\r\n  \"branch_id\": 2,\r\n  \"worker_name\": \"Prashant babu\",\r\n  \"admin\": {\r\n    \"id\":2\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/admin/worker",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"admin",
+						"worker"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Products",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Milk 2\",\r\n  \"price\": 99.99,\r\n  \"createdAt\": \"2024-06-01T10:00:00Z\",\r\n  \"updatedAt\": \"2024-06-01T10:00:00Z\",\r\n  \"unit\": \"2ltr\",\r\n  \"admin\": {\r\n    \"id\":2\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/admin/product/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"admin",
+						"product",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Products",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"name\": \"John Doe\",\r\n  \"gender\": \"male\",\r\n  \"address\": \"123 Main St, Anytown, USA\",\r\n  \"subscriptionStart\": \"2024-06-01T10:00:00.000Z\",\r\n  \"subscriptionEnd\": \"2025-06-01T10:00:00.000Z\",\r\n  \"subscriptionRenew\": true,\r\n  \"package\": \"Premium\",\r\n  \"createdAt\": \"2024-06-01T10:00:00.000Z\",\r\n  \"updatedAt\": \"2024-06-01T10:00:00.000Z\",\r\n  \"branch_id\": 2,\r\n  \"admin\": {\r\n    \"id\":2\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/admin/product/2",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"admin",
+						"product",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Customer",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"name\": \"John Doe\",\r\n  \"gender\": \"male\",\r\n  \"address\": \"123 Main St, Anytown, USA\",\r\n  \"subscriptionStart\": \"2024-06-01T10:00:00.000Z\",\r\n  \"subscriptionEnd\": \"2025-06-01T10:00:00.000Z\",\r\n  \"subscriptionRenew\": true,\r\n  \"package\": \"Premium\",\r\n  \"createdAt\": \"2024-06-01T10:00:00.000Z\",\r\n  \"updatedAt\": \"2024-06-01T10:00:00.000Z\",\r\n  \"branch_id\": 2,\r\n  \"admin\": {\r\n    \"id\":2\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/admin/customer/2",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"admin",
+						"customer",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Customer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"name\": \"John Doe\",\r\n  \"gender\": \"male\",\r\n  \"address\": \"123 Main St, Anytown, USA\",\r\n  \"subscriptionStart\": \"2024-06-01T10:00:00.000Z\",\r\n  \"subscriptionEnd\": \"2025-06-01T10:00:00.000Z\",\r\n  \"subscriptionRenew\": true,\r\n  \"package\": \"Premium\",\r\n  \"createdAt\": \"2024-06-01T10:00:00.000Z\",\r\n  \"updatedAt\": \"2024-06-01T10:00:00.000Z\",\r\n  \"branch_id\": 2,\r\n  \"admin\": {\r\n    \"id\":2\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/admin/customer",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"admin",
+						"customer"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

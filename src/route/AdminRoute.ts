@@ -1,5 +1,5 @@
 import express from "express"
-import { getAllAdmins, addNewAdmin, adminPreChecks, deleteAdminById, deleteAdminAll, getAllBranches, getBranchById, getAllWorker, addNewWorker, getWorkerByBranch, addBranchToAdmin, getAllProducts, addProduct } from "../controller/AdminController"
+import { getAllAdmins, addNewAdmin, adminPreChecks, deleteAdminById, deleteAdminAll, getAllBranches, getBranchById, getAllWorker, addNewWorker, getWorkerByBranch, addBranchToAdmin, getAllProducts, addProduct, getAllCustomers, addCustomer } from "../controller/AdminController"
 
 export const adminRoute = express.Router()
 
@@ -21,5 +21,8 @@ adminRoute
     // product route
     .get("/admin/product/:adminId", getAllProducts)
     .post("/admin/product", addProduct)
+    // customer route
+    .get("/admin/customer/:adminId",getAllCustomers)
+    .post("/admin/customer", addCustomer)
 
 
