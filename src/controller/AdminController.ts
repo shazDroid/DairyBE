@@ -226,14 +226,22 @@ export const getWorkerByBranch = async (req: Request, res: Response) => {
  */
 export const getAllProducts = async (req: Request, res: Response) => {
     const { adminId } = req.params
-    const result = productRepo.findOneBy({
-        admin: { id: parseInt(adminId) }
-    })
-
-    if(!result){
-        res.status(200).json({ products: result })
-    } else {
-        res.status(200).json({ message: 'No products found' })
+    try{
+        const result = await productRepo.find({
+            where: { admin: { id: parseInt(adminId) } },
+            relations: ["admin"]
+        })
+        console.log(result)
+        if(result.length > 0){
+            res.status(200).json({ products: result.map(({ admin, ...productWithoutAdmin }) => productWithoutAdmin) } )
+        } else {
+            res.status(200).json({ message: 'No products found' })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to fetch products',
+            error: error,
+        });
     }
 }
 

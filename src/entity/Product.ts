@@ -1,5 +1,5 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { ServeType, Unit } from "../utility/Enums";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Unit } from "../utility/Enums";
 import { Admin } from "./Admin";
 
 
@@ -18,10 +18,9 @@ export class Product {
     @Column({ type: 'enum', enum: Unit })
     unit: Unit
 
-    @OneToOne(() => Admin, admin => admin.products)
+    @ManyToOne(() => Admin, admin => admin.products)
     @JoinColumn({
-        name: 'admin_id',
-        referencedColumnName: 'id'
+        name : "admin_id"
     })
     admin: Admin
 

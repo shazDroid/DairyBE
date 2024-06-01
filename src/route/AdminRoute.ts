@@ -16,10 +16,10 @@ adminRoute
     .post("/admin/branch",addBranchToAdmin)
     // worker route
     .get("/admin/worker/:adminId", getAllWorker)
-    .get("/admin/worker/branch/:branchId",adminPreChecks, getWorkerByBranch)
+    .get("/admin/worker/branch/:branchId", getWorkerByBranch)
     .post("/admin/worker",adminPreChecks, addNewWorker)
     // product route
-    .get("/admin/product/:adminId",getAllProducts)
-    .post("/admin/product/:adminId", addProduct)
+    .get("/admin/product/:adminId", getAllProducts)
+    .post("/admin/product", addProduct)
 
 
