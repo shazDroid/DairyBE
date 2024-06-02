@@ -3,7 +3,8 @@
 		"_postman_id": "225e0813-1f33-441a-b43c-839dd98fbfb9",
 		"name": "Dairy APIs",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "3768052"
+		"_exporter_id": "3768052",
+		"_collection_link": "https://lunar-sunset-50533.postman.co/workspace/ALPHA-Workspace~61615dd3-d8cf-4fc6-b37e-bbd2ded1d495/collection/3768052-225e0813-1f33-441a-b43c-839dd98fbfb9?action=share&source=collection_link&creator=3768052"
 	},
 	"item": [
 		{
@@ -274,6 +275,35 @@
 						"api",
 						"admin",
 						"customer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add State",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"state_name\": \"Gujarat\",\r\n  \"createdAt\": \"2024-06-01T12:00:00Z\",\r\n  \"updatedAt\": \"2024-06-02T12:00:00Z\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/admin/state",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"admin",
+						"state"
 					]
 				}
 			},
