@@ -5,6 +5,8 @@ import { Branch } from '../entity/Branch';
 import { Worker } from '../entity/Worker';
 import { Product } from '../entity/Product';
 import { Customer } from '../entity/Customer';
+import { State } from '../entity/State';
+import { stat } from 'fs';
 
 
 const adminRepo = appDataSource.getRepository(Admin);
@@ -12,6 +14,7 @@ const workerRepo = appDataSource.getRepository(Worker);
 const branchRepo = appDataSource.getRepository(Branch);
 const productRepo = appDataSource.getRepository(Product);
 const customerRepo = appDataSource.getRepository(Customer);
+const stateRepo = appDataSource.getRepository(State);
 
 /**
  * Pre Checks 
@@ -312,5 +315,19 @@ export const getAllCustomers = async (req: Request, res: Response) => {
             message: 'Failed to fetch customer\'s',
             error: error,
         });
+    }
+}
+
+/**
+ * Add State
+ */
+export const addState = async (req: Request, res: Response) => {
+    const state: State = req.body;
+    const result = await stateRepo.insert(state)
+
+    if(result.raw.insertId != null){
+        res.status(200).json({ message: 'State added successfully' })
+    } else {
+        res.status(200).json({ message: 'Failed to add state !' })
     }
 }
