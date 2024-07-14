@@ -19,9 +19,14 @@ exports.adminRoute
     .get("/admin/branch/:branchId", AdminController_1.adminPreChecks, AdminController_1.getBranchById)
     .post("/admin/branch", AdminController_1.addBranchToAdmin)
     // worker route
-    .get("/admin/worker/:adminId", AdminController_1.adminPreChecks, AdminController_1.getAllWorker)
-    .get("/admin/worker/branch/:branchId", AdminController_1.adminPreChecks, AdminController_1.getWorkerByBranch)
+    .get("/admin/worker/:adminId", AdminController_1.getAllWorker)
+    .get("/admin/worker/branch/:branchId", AdminController_1.getWorkerByBranch)
     .post("/admin/worker", AdminController_1.adminPreChecks, AdminController_1.addNewWorker)
     // product route
-    .get("/admin/product/:adminId", AdminController_1.adminPreChecks, AdminController_1.getAllProducts)
-    .post("/admin/product/addProduct", AdminController_1.addProduct);
+    .get("/admin/product/:adminId", AdminController_1.getAllProducts)
+    .post("/admin/product", AdminController_1.addProduct)
+    // customer route
+    .get("/admin/customer/:adminId", AdminController_1.getAllCustomers)
+    .post("/admin/customer", AdminController_1.addCustomer)
+    // state
+    .post("/admin/state", AdminController_1.addState);

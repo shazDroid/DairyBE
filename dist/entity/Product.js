@@ -33,10 +33,9 @@ __decorate([
     __metadata("design:type", String)
 ], Product.prototype, "unit", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => Admin_1.Admin, admin => admin.products),
+    (0, typeorm_1.ManyToOne)(() => Admin_1.Admin, admin => admin.products),
     (0, typeorm_1.JoinColumn)({
-        name: 'admin_id',
-        referencedColumnName: 'id'
+        name: "admin_id"
     }),
     __metadata("design:type", Admin_1.Admin)
 ], Product.prototype, "admin", void 0);

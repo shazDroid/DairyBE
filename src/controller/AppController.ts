@@ -28,7 +28,7 @@ export const adminLogin = async (req: Request, res: Response) => {
 
         res.status(200).json({ result })
     } else {
-        res.status(404).json({ message: "Phone no or password Invalid, Please try again" })
+        res.status(401).json({ message: "Phone no or password Invalid, Please try again" })
     }
     
 };

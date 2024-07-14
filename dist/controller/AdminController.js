@@ -8,17 +8,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addProduct = exports.getAllProducts = exports.getWorkerByBranch = exports.addNewWorker = exports.getAllWorker = exports.addBranchToAdmin = exports.getBranchById = exports.getAllBranches = exports.deleteAdminAll = exports.deleteAdminById = exports.addNewAdmin = exports.getAllAdmins = exports.adminPreChecks = void 0;
+exports.addState = exports.getAllCustomers = exports.addCustomer = exports.addProduct = exports.getAllProducts = exports.getWorkerByBranch = exports.addNewWorker = exports.getAllWorker = exports.addBranchToAdmin = exports.getBranchById = exports.getAllBranches = exports.deleteAdminAll = exports.deleteAdminById = exports.addNewAdmin = exports.getAllAdmins = exports.adminPreChecks = void 0;
 const dataSource_1 = require("../dataSource");
 const Admin_1 = require("../entity/Admin");
 const Branch_1 = require("../entity/Branch");
 const Worker_1 = require("../entity/Worker");
 const Product_1 = require("../entity/Product");
+const Customer_1 = require("../entity/Customer");
+const State_1 = require("../entity/State");
 const adminRepo = dataSource_1.appDataSource.getRepository(Admin_1.Admin);
 const workerRepo = dataSource_1.appDataSource.getRepository(Worker_1.Worker);
 const branchRepo = dataSource_1.appDataSource.getRepository(Branch_1.Branch);
 const productRepo = dataSource_1.appDataSource.getRepository(Product_1.Product);
+const customerRepo = dataSource_1.appDataSource.getRepository(Customer_1.Customer);
+const stateRepo = dataSource_1.appDataSource.getRepository(State_1.State);
 /**
  * Pre Checks
  */
@@ -90,7 +105,10 @@ exports.deleteAdminAll = deleteAdminAll;
  */
 const getAllBranches = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { adminId } = req.params;
+    console.error("ADMIN iD >>>>>>>>>>>> " + adminId);
     const result = yield adminRepo.findOneBy({ id: parseInt(adminId) });
+    console.log("BRANCHES >>>>>");
+    console.log(result);
     if (result != null) {
         res.status(200).json({
             admin_id: result.id,
@@ -137,13 +155,11 @@ exports.addBranchToAdmin = addBranchToAdmin;
  */
 const getAllWorker = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { adminId } = req.params;
-    console.log("SHAZ - adminId >>> ", adminId);
     try {
         const result = yield workerRepo.find({
             where: { admin: { id: parseInt(adminId) } },
             relations: ['branch']
         });
-        console.log(result);
         if (result.length > 0) {
             res.status(200).json({ worker: result });
         }
@@ -203,14 +219,27 @@ exports.getWorkerByBranch = getWorkerByBranch;
  */
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { adminId } = req.params;
-    const result = productRepo.findOneBy({
-        admin: { id: parseInt(adminId) }
-    });
-    if (!result) {
-        res.status(200).json({ products: result });
+    try {
+        const result = yield productRepo.find({
+            where: { admin: { id: parseInt(adminId) } },
+            relations: ["admin"]
+        });
+        console.log(result);
+        if (result.length > 0) {
+            res.status(200).json({ products: result.map((_a) => {
+                    var { admin } = _a, productWithoutAdmin = __rest(_a, ["admin"]);
+                    return productWithoutAdmin;
+                }) });
+        }
+        else {
+            res.status(200).json({ message: 'No products found' });
+        }
     }
-    else {
-        res.status(200).json({ message: 'No products found' });
+    catch (error) {
+        res.status(500).json({
+            message: 'Failed to fetch products',
+            error: error,
+        });
     }
 });
 exports.getAllProducts = getAllProducts;
@@ -234,3 +263,66 @@ const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     });
 });
 exports.addProduct = addProduct;
+/**
+ * Add customer
+ */
+const addCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const customer = req.body;
+    const admin = yield adminRepo.findOneBy({ id: customer.admin.id });
+    if (admin != null) {
+        customer.admin = admin;
+    }
+    else {
+        return res.status(404).json({ message: 'Admin not found !' });
+    }
+    const result = yield customerRepo.insert(customer);
+    const responseBody = yield customerRepo.findOneBy(result.raw.insertId);
+    res.status(200).json({
+        message: 'Customer added successfully',
+        customer: responseBody,
+    });
+});
+exports.addCustomer = addCustomer;
+/**
+ * Get all customers
+ */
+const getAllCustomers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { adminId } = req.params;
+    try {
+        const result = yield customerRepo.find({
+            where: { admin: { id: parseInt(adminId) } },
+            relations: ["admin"]
+        });
+        console.log(result);
+        if (result.length > 0) {
+            res.status(200).json({ customers: result.map((_a) => {
+                    var { admin } = _a, customerWithoutAdmin = __rest(_a, ["admin"]);
+                    return customerWithoutAdmin;
+                }) });
+        }
+        else {
+            res.status(200).json({ message: 'No customer\'s found' });
+        }
+    }
+    catch (error) {
+        res.status(500).json({
+            message: 'Failed to fetch customer\'s',
+            error: error,
+        });
+    }
+});
+exports.getAllCustomers = getAllCustomers;
+/**
+ * Add State
+ */
+const addState = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const state = req.body;
+    const result = yield stateRepo.insert(state);
+    if (result.raw.insertId != null) {
+        res.status(200).json({ message: 'State added successfully' });
+    }
+    else {
+        res.status(200).json({ message: 'Failed to add state !' });
+    }
+});
+exports.addState = addState;

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Customer = exports.Gender = void 0;
 const typeorm_1 = require("typeorm");
 const Branch_1 = require("./Branch");
+const Admin_1 = require("./Admin");
 var Gender;
 (function (Gender) {
     Gender["MALE"] = "male";
@@ -61,6 +62,14 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Customer.prototype, "package", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => Admin_1.Admin, admin => admin.customers),
+    (0, typeorm_1.JoinColumn)({
+        name: 'admin_id',
+        referencedColumnName: 'id'
+    }),
+    __metadata("design:type", Admin_1.Admin)
+], Customer.prototype, "admin", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => Branch_1.Branch, branch => branch.customer),
     (0, typeorm_1.JoinColumn)({

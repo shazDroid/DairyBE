@@ -8,7 +8,6 @@ import { Customer } from '../entity/Customer';
 import { State } from '../entity/State';
 import { stat } from 'fs';
 
-
 const adminRepo = appDataSource.getRepository(Admin);
 const workerRepo = appDataSource.getRepository(Worker);
 const branchRepo = appDataSource.getRepository(Branch);
@@ -17,7 +16,47 @@ const customerRepo = appDataSource.getRepository(Customer);
 const stateRepo = appDataSource.getRepository(State);
 
 /**
- * Pre Checks 
+ *  Dashboard api
+ */
+export const dashboardApi = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    const { adminId } = req.body;
+
+    const admin = await adminRepo.findOne({
+        where: { id: parseInt(adminId) },
+    });
+
+    const workerCount = await workerRepo.find({
+        where: { admin: { id: parseInt(adminId) } },
+    });
+
+    const productCount = await productRepo.find({
+        where: { admin: { id: parseInt(adminId) } },
+    });
+
+    const branchCount = await branchRepo.find({
+        where: { admin: { id: parseInt(adminId) } },
+    });
+
+    const customerCount = await customerRepo.find({
+        where: { admin: { id: parseInt(adminId) } },
+    });
+
+    res.status(200).json({
+        dashboard: {
+            customerCount: customerCount.length,
+            productCount: productCount.length,
+            branchCount: branchCount.length,
+            workerCount: workerCount.length,
+        },
+    });
+};
+
+/**
+ * Pre Checks
  */
 export const adminPreChecks = async (
     req: Request,
@@ -35,17 +74,12 @@ export const adminPreChecks = async (
             res.status(200).json({ message: 'No records present' });
         }
     } else {
-        const result = await adminRepo.find();
-        if (result.length > 0) {
-            next();
-        } else {
-            res.status(200).json({ message: 'No records present' });
-        }
+        next();
     }
 };
 
 /**
- *  Get all admins 
+ *  Get all admins
  */
 export const getAllAdmins = async (
     req: Request,
@@ -55,7 +89,6 @@ export const getAllAdmins = async (
     const result = await adminRepo.find();
     res.status(200).json({ admin: result });
 };
-
 
 /**
  *  Add new admin
@@ -88,7 +121,6 @@ export const deleteAdminById = async (
     res.status(200).json({ message: `Admin deleted : id ${adminId}` });
 };
 
-
 /**
  * Delete all admin
  */
@@ -101,30 +133,27 @@ export const deleteAdminAll = async (
     res.status(200).json({ message: 'Deleted all admin successfully' });
 };
 
-
-
 /**
  * Branches
- * Get all branches 
+ * Get all branches
  */
-
 export const getAllBranches = async (req: Request, res: Response) => {
-    const { adminId } = req.params;
-
+    const { adminId } = req.body;
     const result = await adminRepo.findOneBy({ id: parseInt(adminId) });
     if (result != null) {
+        const branches = await branchRepo.find({
+            where: { admin: { id: parseInt(adminId) } },
+        });
         res.status(200).json({
-            admin_id: result.id,
-            branches: result.branches,
+            branches: branches,
         });
     } else {
         res.status(200).json({ message: 'No branches available' });
     }
 };
 
-
 /**
- *  Get Branch by Id 
+ *  Get Branch by Id
  */
 export const getBranchById = async (req: Request, res: Response) => {
     const { branchId } = req.params;
@@ -133,29 +162,28 @@ export const getBranchById = async (req: Request, res: Response) => {
     res.status(200).json({ branch: result });
 };
 
-
 /**
- * Add branch to admin 
+ * Add branch to admin
  */
 export const addBranchToAdmin = async (req: Request, res: Response) => {
-    const branch: Branch = req.body
-    
-    const admin = await adminRepo.findOneBy({ id:branch.admin.id });
+    const branch: Branch = req.body;
+
+    const admin = await adminRepo.findOneBy({ id: branch.admin.id });
 
     // insert new branch
-    if(admin != null){
-        branch.admin = admin
-        const branchInsertResult = await branchRepo.insert(branch)
-        const branchResult = await branchRepo.findOneBy({ id: parseInt(branchInsertResult.raw.insertId) });
+    if (admin != null) {
+        branch.admin = admin;
+        const branchInsertResult = await branchRepo.insert(branch);
+        const branchResult = await branchRepo.findOneBy({
+            id: parseInt(branchInsertResult.raw.insertId),
+        });
         if (branchResult != null) {
             res.status(200).json({ message: 'Branch added successfully' });
         } else {
             res.status(200).json({ message: 'Failed to add branch' });
         }
-    } 
+    }
 };
-
-
 
 /**
  *  Worker
@@ -167,7 +195,7 @@ export const getAllWorker = async (req: Request, res: Response) => {
     try {
         const result = await workerRepo.find({
             where: { admin: { id: parseInt(adminId) } },
-            relations: ['branch']
+            relations: ['branch'],
         });
 
         if (result.length > 0) {
@@ -185,7 +213,6 @@ export const getAllWorker = async (req: Request, res: Response) => {
         });
     }
 };
-
 
 /**
  * Add new worker
@@ -208,7 +235,6 @@ export const addNewWorker = async (req: Request, res: Response) => {
     });
 };
 
-
 /**
  * Get worker by branch
  */
@@ -225,22 +251,26 @@ export const getWorkerByBranch = async (req: Request, res: Response) => {
     }
 };
 
-
 /**
- * Get all products 
+ * Get all products
  */
 export const getAllProducts = async (req: Request, res: Response) => {
-    const { adminId } = req.params
-    try{
+    const { adminId } = req.body;
+    console.log('ADMIN >>> ', adminId);
+    try {
         const result = await productRepo.find({
             where: { admin: { id: parseInt(adminId) } },
-            relations: ["admin"]
-        })
-        console.log(result)
-        if(result.length > 0){
-            res.status(200).json({ products: result.map(({ admin, ...productWithoutAdmin }) => productWithoutAdmin) } )
+            relations: ['admin'],
+        });
+        console.log(result);
+        if (result.length > 0) {
+            res.status(200).json({
+                products: result.map(
+                    ({ admin, ...productWithoutAdmin }) => productWithoutAdmin,
+                ),
+            });
         } else {
-            res.status(200).json({ message: 'No products found' })
+            res.status(200).json({ message: 'No products found' });
         }
     } catch (error) {
         res.status(500).json({
@@ -248,7 +278,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
             error: error,
         });
     }
-}
+};
 
 /**
  * Add product
@@ -269,11 +299,10 @@ export const addProduct = async (req: Request, res: Response) => {
         message: 'Product added successfully',
         product: responseBody,
     });
-}
-
+};
 
 /**
- * Add customer 
+ * Add customer
  */
 export const addCustomer = async (req: Request, res: Response) => {
     const customer: Customer = req.body;
@@ -291,43 +320,47 @@ export const addCustomer = async (req: Request, res: Response) => {
         message: 'Customer added successfully',
         customer: responseBody,
     });
-}
-
+};
 
 /**
  * Get all customers
  */
 export const getAllCustomers = async (req: Request, res: Response) => {
-    const { adminId } = req.params
-    try{
+    const { adminId } = req.params;
+    try {
         const result = await customerRepo.find({
             where: { admin: { id: parseInt(adminId) } },
-            relations: ["admin"]
-        })
-        console.log(result)
-        if(result.length > 0){
-            res.status(200).json({ customers: result.map(({ admin, ...customerWithoutAdmin }) => customerWithoutAdmin) } )
+            relations: ['admin'],
+        });
+        console.log(result);
+        if (result.length > 0) {
+            res.status(200).json({
+                customers: result.map(
+                    ({ admin, ...customerWithoutAdmin }) =>
+                        customerWithoutAdmin,
+                ),
+            });
         } else {
-            res.status(200).json({ message: 'No customer\'s found' })
+            res.status(200).json({ message: "No customer's found" });
         }
     } catch (error) {
         res.status(500).json({
-            message: 'Failed to fetch customer\'s',
+            message: "Failed to fetch customer's",
             error: error,
         });
     }
-}
+};
 
 /**
  * Add State
  */
 export const addState = async (req: Request, res: Response) => {
     const state: State = req.body;
-    const result = await stateRepo.insert(state)
+    const result = await stateRepo.insert(state);
 
-    if(result.raw.insertId != null){
-        res.status(200).json({ message: 'State added successfully' })
+    if (result.raw.insertId != null) {
+        res.status(200).json({ message: 'State added successfully' });
     } else {
-        res.status(200).json({ message: 'Failed to add state !' })
+        res.status(200).json({ message: 'Failed to add state !' });
     }
-}
+};

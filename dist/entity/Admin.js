@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const Branch_1 = require("./Branch");
 const Worker_1 = require("./Worker");
 const Product_1 = require("./Product");
+const Customer_1 = require("./Customer");
 let Admin = class Admin {
 };
 exports.Admin = Admin;
@@ -41,6 +42,11 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Admin.prototype, "email", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Customer_1.Customer, customer => customer.admin),
+    (0, typeorm_1.JoinTable)(),
+    __metadata("design:type", Array)
+], Admin.prototype, "customers", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => Branch_1.Branch, branch => branch.admin),
     (0, typeorm_1.JoinTable)(),

@@ -5,9 +5,12 @@ import { adminRoute } from './route/AdminRoute';
 import { handleException } from './utility/ErrorHandler';
 import { workerRoute } from './route/Worker';
 import { appRoute } from './route/AppRoute';
+const morgan = require('morgan');
 require('dotenv').config();
 
 const app = express();
+app.use(morgan('dev'))
+
 const port = process.env.PORT || 3000;
 
 
@@ -17,9 +20,10 @@ app.use(json())
 app.use(handleException)
 
 // admin route 
-app.use("/api", adminRoute)
-app.use("/api", workerRoute)
+app.use("/api/m", adminRoute)
+app.use("/api/m", workerRoute)
 app.use("/api/m", appRoute)
+
 
 // init database 
 appDataSource.initialize()

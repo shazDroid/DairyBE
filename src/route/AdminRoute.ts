@@ -1,30 +1,47 @@
-import express from "express"
-import { getAllAdmins, addNewAdmin, adminPreChecks, deleteAdminById, deleteAdminAll, getAllBranches, getBranchById, getAllWorker, addNewWorker, getWorkerByBranch, addBranchToAdmin, getAllProducts, addProduct, getAllCustomers, addCustomer, addState } from "../controller/AdminController"
+import express from 'express';
+import {
+    getAllAdmins,
+    addNewAdmin,
+    adminPreChecks,
+    deleteAdminById,
+    deleteAdminAll,
+    getAllBranches,
+    getBranchById,
+    getAllWorker,
+    addNewWorker,
+    getWorkerByBranch,
+    addBranchToAdmin,
+    getAllProducts,
+    addProduct,
+    getAllCustomers,
+    addCustomer,
+    addState,
+    dashboardApi,
+} from '../controller/AdminController';
 
-export const adminRoute = express.Router()
+export const adminRoute = express.Router();
 
 // Routes
 adminRoute
     // admin route
-    .get("/admin", getAllAdmins)
-    .post("/admin", addNewAdmin)
-    .delete("/admin/:adminId",adminPreChecks, deleteAdminById)
-    .delete("/admin/",adminPreChecks, deleteAdminAll)
+    .post('/admin/dashboard', dashboardApi)
+    .get('/admin', getAllAdmins)
+    .post('/admin', addNewAdmin)
+    .delete('/admin/:adminId', adminPreChecks, deleteAdminById)
+    .delete('/admin/', adminPreChecks, deleteAdminAll)
     // Branches route
-    .get("/admin/:adminId/branches",adminPreChecks, getAllBranches)
-    .get("/admin/branch/:branchId",adminPreChecks, getBranchById)
-    .post("/admin/branch",addBranchToAdmin)
+    .post('/admin/branches', getAllBranches)
+    .get('/admin/branch/:branchId', adminPreChecks, getBranchById)
+    .post('/admin/branch', addBranchToAdmin)
     // worker route
-    .get("/admin/worker/:adminId", getAllWorker)
-    .get("/admin/worker/branch/:branchId", getWorkerByBranch)
-    .post("/admin/worker",adminPreChecks, addNewWorker)
+    .get('/admin/worker/:adminId', getAllWorker)
+    .get('/admin/worker/branch/:branchId', getWorkerByBranch)
+    .post('/admin/worker', adminPreChecks, addNewWorker)
     // product route
-    .get("/admin/product/:adminId", getAllProducts)
-    .post("/admin/product", addProduct)
+    .post('/admin/products', getAllProducts)
+    .post('/admin/product', addProduct)
     // customer route
-    .get("/admin/customer/:adminId",getAllCustomers)
-    .post("/admin/customer", addCustomer)
+    .get('/admin/customer/:adminId', getAllCustomers)
+    .post('/admin/customer', addCustomer)
     // state
-    .post("/admin/state", addState)
-
-
+    .post('/admin/state', addState);

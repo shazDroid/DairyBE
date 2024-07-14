@@ -10,6 +10,7 @@ const AdminRoute_1 = require("./route/AdminRoute");
 const ErrorHandler_1 = require("./utility/ErrorHandler");
 const Worker_1 = require("./route/Worker");
 const AppRoute_1 = require("./route/AppRoute");
+const morgan = require('morgan');
 require('dotenv').config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
@@ -20,6 +21,7 @@ app.use(ErrorHandler_1.handleException);
 app.use("/api", AdminRoute_1.adminRoute);
 app.use("/api", Worker_1.workerRoute);
 app.use("/api/m", AppRoute_1.appRoute);
+app.use(morgan('dev'));
 // init database 
 dataSource_1.appDataSource.initialize()
     .then(() => {

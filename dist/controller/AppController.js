@@ -34,7 +34,7 @@ const adminLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(200).json({ result });
     }
     else {
-        res.status(404).json({ message: "Phone no or password Invalid, Please try again" });
+        res.status(401).json({ message: "Phone no or password Invalid, Please try again" });
     }
 });
 exports.adminLogin = adminLogin;
